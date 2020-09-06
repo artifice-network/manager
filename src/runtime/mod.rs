@@ -1,3 +1,4 @@
+#![allow(non_camel_case_types)]
 #[cfg(feature = "kvm")]
 pub mod kvm;
 

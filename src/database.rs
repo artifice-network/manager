@@ -1,10 +1,10 @@
 use networking::encryption::{
     simple_aes_decrypt as sym_aes_decrypt, simple_aes_encrypt as sym_aes_encrypt,
 };
-use std::error::Error;
 use serde::{de::DeserializeOwned, Serialize};
 use std::collections::hash_map::{IntoIter, Iter, IterMut};
 use std::collections::HashMap;
+use std::error::Error;
 use std::fmt;
 use std::iter::IntoIterator;
 use std::path::Path;
