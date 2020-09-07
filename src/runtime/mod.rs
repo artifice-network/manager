@@ -1,10 +1,13 @@
 #![allow(non_camel_case_types)]
 #[cfg(feature = "kvm")]
 pub mod kvm;
+use derive_more::{Display};
 
 use crate::{EnvData, EnvType, ExecEnv, RemoteEnv};
 use networking::NetworkError;
 use std::convert::TryInto;
+use std::error::Error;
+use std::str::FromStr;
 
 pub struct VirtualEnv {
     key: [u8; 16],
@@ -76,3 +79,51 @@ impl EnvData for NativeEnv {
         self.env.cpu_speed()
     }
 }
+
+/// contains definitions for various data sizes
+#[derive(Debug, Display, Clone, Copy, Serialize, Deserialize, PartialEq, Eq, PartialOrd, Ord)]
+pub enum Unit {
+    /// kibibytes
+    KiB,
+    /// membibytes
+    MiB,
+    /// gibibytes
+    GiB,
+    /// tibibytes
+    TiB,
+    /// pebibytes
+    PiB,
+    /// kilabytes
+    KB,
+    /// megabayes
+    MB,
+    /// gigabytes
+    GB,
+    /// terabytes
+    TB,
+    /// petabytes
+    PB
+}
+impl FromStr for Unit {
+    type Err = UnitErr;
+    fn from_str(s: &str) -> Result<Self, Self::Err>{
+        Ok(match s {
+            "KiB" => Unit::KiB,
+            "MiB" => Unit::MiB,
+            "GiB" => Unit::GiB,
+            "TiB" => Unit::TiB,
+            "PiB" => Unit::PiB,
+            "KB" => Unit::KB,
+            "MB" => Unit::MB,
+            "GB" => Unit::GB,
+            "TB" => Unit::TB,
+            "PB" => Unit::PB,
+            _ => return Err(UnitErr::UnknownFormat),
+        })
+    }
+}
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq, Display)]
+pub enum UnitErr{
+    UnknownFormat,
+}
+impl Error for UnitErr {}
